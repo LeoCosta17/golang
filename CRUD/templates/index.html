@@ -10,21 +10,27 @@
 </head>
 <body>
     <h1 class="display-3">Cadastro Contatos</h1>
-    <form class="row g-3 align-items-center justify-content-center">
+    <form class="row g-5 align-items-center justify-content-center" method="post">
         <div class="col-auto">
             <label for="inputName" class="col-form-label">Nome</label>
         </div>
         <div class="col-auto">
-            <input type="text" id="inputName" class="form-control">
+            <input type="text" id="inputName" name="inputName" class="form-control">
         </div>
         <div class="col-auto">
             <label for="inputEmail" class="col-form-label">Email</label>
         </div>
         <div class="col-auto">
-            <input type="email" id="inputEmail" class="form-control">
+            <input type="email" id="inputEmail" name="inputEmail" class="form-control">
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-primary"><i class="bi bi-person-fill-add"></i> Adicionar</button>
+            <label for="inputPhone" class="col-form-label">Telefone</label>
+        </div>
+        <div class="col-auto">
+            <input type="tel" id="inputPhone" name="inputPhone" class="form-control" placeholder="()0 0000-0000" pattern="([0-9]{2}) [0-9]{1} [0-9]{4}-[0-9]{4}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-person-fill-add"></i> Adicionar</button>
         </div>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
