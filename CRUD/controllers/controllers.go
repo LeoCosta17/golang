@@ -23,6 +23,8 @@ func CriarContatoHandler(w http.ResponseWriter, r *http.Request) {
 			Mensagem: "Método não permitido",
 			Erro:     nil,
 		}
+
+		w.WriteHeader(http.StatusInternalServerError)
 		templates.ExecuteTemplate(w, "erro.html", erro)
 		return
 	}
@@ -43,9 +45,13 @@ func CriarContatoHandler(w http.ResponseWriter, r *http.Request) {
 			Mensagem: "Erro ao criar contato",
 			Erro:     err,
 		}
+
+		w.WriteHeader(http.StatusInternalServerError)
 		templates.ExecuteTemplate(w, "erro.html", erro)
 		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 
 	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }

@@ -10,6 +10,8 @@ func CarregaRotas() *http.ServeMux {
 
 	router.HandleFunc("GET /home", controllers.HomeHandler)
 	router.HandleFunc("POST /home", controllers.CriarContatoHandler)
+	//router.HandleFunc("PUT /home", nil)
+	//router.HandleFunc("DELETE /home", nil)
 
 	return router
 }
