@@ -18,7 +18,12 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 func CriarContatoHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+
+		erro := models.CustomError{
+			Mensagem: "Método não permitido",
+			Erro:     nil,
+		}
+		templates.ExecuteTemplate(w, "erro.html", erro)
 		return
 	}
 
@@ -34,7 +39,11 @@ func CriarContatoHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := contato.CriarContato(contato)
 	if err != nil {
-		http.Error(w, "Erro ao criar contato", http.StatusInternalServerError)
+		erro := models.CustomError{
+			Mensagem: "Erro ao criar contato",
+			Erro:     err,
+		}
+		templates.ExecuteTemplate(w, "erro.html", erro)
 		return
 	}
 
