@@ -1,0 +1,14 @@
+.th{
+    display: flex !important;;
+    justify-content: center !important;
+    align-items: center !important;
+    
+}
+
+#contatos{
+    max-width: 100% !important;
+}
+
+.table-responsive{
+    max-width: 80% !important;
+}
