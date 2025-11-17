@@ -4,6 +4,7 @@ import (
 	"crud/models"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 var templates *template.Template
@@ -89,7 +90,24 @@ func BuscarContatoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditarContatoHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		erro := models.CustomError{
+			Mensagem: "Método não permitido",
+			Erro:     nil,
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		templates.ExecuteTemplate(w, "erro.html", erro)
+		return
+	}
 
+	var contato models.Contato
+
+	contato.ID, _ = strconv.Atoi(r.FormValue("editId"))
+	contato.Nome = r.FormValue("editName")
+	contato.Email = r.FormValue("editEmail")
+	contato.Telefone = r.FormValue("editPhone")
+
+	contato.EditarContato(&contato)
 }
 
 func ExcluirContatoHandler(w http.ResponseWriter, r *http.Request) {

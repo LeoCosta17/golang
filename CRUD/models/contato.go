@@ -77,6 +77,30 @@ func BuscarContato() (*Contato, error) { // Busca por um contato específico no 
 }
 
 func (Contato) EditarContato(contato *Contato) error { // Edita um contato específico no banco de dados
+	db, err := database.ConnDatabase()
+	if err != nil {
+		return err
+	}
+
+	defer db.Close()
+
+	statement, err := db.Prepare("UPDATE usuarios SET nome=$1, email=$2, telefone=$3 WHERE id=$4")
+	if err != nil {
+		return err
+	}
+
+	defer statement.Close()
+
+	resultado, err := statement.Exec(statement, contato.Nome, contato.Email, contato.Telefone, contato.ID)
+	if err != nil {
+		return err
+	}
+
+	_, err = resultado.RowsAffected()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

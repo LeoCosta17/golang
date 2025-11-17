@@ -8,6 +8,9 @@ import (
 )
 
 func main() {
+	rotas := routes.CarregaRotas()
+	fs := http.FileServer(http.Dir("./static"))
 
-	http.ListenAndServe(":5050", routes.CarregaRotas())
+	rotas.Handle("/CRUD/static/", http.StripPrefix("/CRUD/static/", fs))
+	http.ListenAndServe(":5050", rotas)
 }
