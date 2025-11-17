@@ -40,6 +40,7 @@
             <table class="table table-sm table-hover">
                 <thead class="table-primary">
                     <tr>
+                        <th scope="col">ID</th>
                         <th scope="col">Nome</th>
                         <th scope="col">Email</th>
                         <th scope="col">Telefone</th>
@@ -49,14 +50,20 @@
                 <tbody>
                     {{ range . }}
                     <tr>
+                        <td>{{ .ID }}</td>
                         <td>{{ .Nome }}</td>
                         <td>{{ .Email }}</td>
                         <td>{{ .Telefone }}</td>
                         <td>
-                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editModal" data-bs-id='{{ .ID }}' data-bs-nome='{{ .Nome }}' data-bs-email='{{ .Email }}' data-bs-telefone='{{ .Telefone }}'  >
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editModal" 
+                            data-bs-id='{{ .ID }}'
+                            data-bs-nome='{{ .Nome }}' 
+                            data-bs-email='{{ .Email }}'
+                            data-bs-telefone='{{ .Telefone }}'  >
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button type="button" class="btn">
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                            data-bs-id='{{ .ID }}' >
                                 <i class="bi bi-trash"></i>
                             </button>
                         </td>
@@ -101,6 +108,27 @@
       </div>
     </div>
 
+    <div class="modal fade" id="deleteModal" tabindex="1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Excluir Contato</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bs-target="">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="deleteId" name="deleteId">
+                    <p>Tem certeza que deseja excluir este contato?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-danger" id="btn-excluir-contato">Excluir</button>
+                </div>
+            </div>
+        </div>
+    
     
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

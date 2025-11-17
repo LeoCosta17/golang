@@ -20,3 +20,35 @@ if(modal){
         inputTelefone.value = telefone;
     });
 }
+
+const deleteModal = document.getElementById('deleteModal');
+if(deleteModal){
+    deleteModal.addEventListener('show.bs.modal', event =>{
+
+        const button = event.relatedTarget;
+
+        const id = button.getAttribute('data-bs-id');
+
+        const inputId = document.getElementById('deleteId');
+
+        inputId.value = id;
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteButton = document.getElementById('btn-excluir-contato');
+
+    deleteButton.addEventListener('click', () => {
+        const id = document.getElementById('deleteId').value;
+
+        fetch(`/${id}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if(response.ok){
+                alert('Contato excluído!');
+                location.reload();
+            }
+        })
+    })
+})

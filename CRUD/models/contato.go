@@ -106,5 +106,28 @@ func (Contato) EditarContato(contato *Contato) error { // Edita um contato espec
 
 func ExcluirContato(ID_contato int) error { // Exclui um contato específico no banco de dados
 
+	db, err := database.ConnDatabase()
+	if err != nil {
+		return err
+	}
+
+	defer db.Close()
+
+	statement, err := db.Prepare("DELETE FROM usuarios WHERE id=$1")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	resultado, err := statement.Exec(ID_contato)
+	if err != nil {
+		return err
+	}
+
+	_, err = resultado.RowsAffected()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

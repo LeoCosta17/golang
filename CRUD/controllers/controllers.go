@@ -109,5 +109,28 @@ func EditarContatoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ExcluirContatoHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		erro := models.CustomError{
+			Mensagem: "Método não permitido",
+			Erro:     nil,
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		templates.ExecuteTemplate(w, "erro.html", erro)
+		return
+	}
 
+	ID, _ := strconv.Atoi(r.PathValue("id"))
+
+	err := models.ExcluirContato(ID)
+
+	if err != nil {
+		erro := models.CustomError{
+			Mensagem: "Erro ao excluir contato.",
+			Erro:     err,
+		}
+
+		w.WriteHeader(http.StatusInternalServerError)
+		templates.ExecuteTemplate(w, "erro.html", erro)
+		return
+	}
 }
