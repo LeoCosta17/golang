@@ -64,9 +64,7 @@ func CriarContatoHandler(w http.ResponseWriter, r *http.Request) { // Cria um no
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-
-	http.Redirect(w, r, "/home", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func BuscarContatosHandler(w http.ResponseWriter, r *http.Request) ([]models.Contato, error) {

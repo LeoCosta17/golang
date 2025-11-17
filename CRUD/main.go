@@ -10,7 +10,8 @@ import (
 func main() {
 	rotas := routes.CarregaRotas()
 	fs := http.FileServer(http.Dir("./static"))
+	staticHandler := http.StripPrefix("/CRUD/static/", fs)
 
-	rotas.Handle("/CRUD/static/", http.StripPrefix("/CRUD/static/", fs))
+	rotas.Handle("GET /CRUD/static/", staticHandler)
 	http.ListenAndServe(":5050", rotas)
 }
