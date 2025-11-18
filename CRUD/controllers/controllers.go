@@ -88,7 +88,7 @@ func BuscarContatoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditarContatoHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
+	if r.Method != http.MethodPost {
 		erro := models.CustomError{
 			Mensagem: "Método não permitido",
 			Erro:     nil,
@@ -105,7 +105,18 @@ func EditarContatoHandler(w http.ResponseWriter, r *http.Request) {
 	contato.Email = r.FormValue("editEmail")
 	contato.Telefone = r.FormValue("editPhone")
 
-	contato.EditarContato(&contato)
+	err := contato.EditarContato(&contato)
+	if err != nil {
+		erro := models.CustomError{
+			Mensagem: "Erro ao editar contato.",
+			Erro:     err,
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+		templates.ExecuteTemplate(w, "erro.html", erro)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func ExcluirContatoHandler(w http.ResponseWriter, r *http.Request) {

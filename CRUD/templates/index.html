@@ -84,7 +84,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form id="editForm">
+            <form id="editForm" action="/atualizar-contato/" method="post">
                 <input type="hidden" id="editId" name="editId">
                 <div class="mb-3">
                     <label for="editName" class="col-form-label">Nome:</label>
@@ -102,7 +102,7 @@
           </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Salvar mudanças</button>
+                <button type="submit" class="btn btn-primary" form="editForm">Salvar mudanças</button>
             </div>
         </div>
       </div>

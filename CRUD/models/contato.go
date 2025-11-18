@@ -91,7 +91,7 @@ func (Contato) EditarContato(contato *Contato) error { // Edita um contato espec
 
 	defer statement.Close()
 
-	resultado, err := statement.Exec(statement, contato.Nome, contato.Email, contato.Telefone, contato.ID)
+	resultado, err := statement.Exec(contato.Nome, contato.Email, contato.Telefone, contato.ID)
 	if err != nil {
 		return err
 	}
