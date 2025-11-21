@@ -21,7 +21,7 @@ func (Contato) CriarContato(contato *Contato) error { // Cadastra um contato no 
 
 	defer db.Close()
 
-	statement, err := db.Prepare("INSERT INTO usuarios(nome, email, telefone) VALUES ($1, $2, $3)")
+	statement, err := db.Prepare("INSERT INTO contatos(nome, email, telefone) VALUES ($1, $2, $3)")
 
 	if err != nil {
 		return err
@@ -50,7 +50,7 @@ func BuscarContatos() ([]Contato, error) { // Busca no banco todos os contatos c
 	}
 	defer db.Close()
 
-	resultados, err := db.Query("SELECT * FROM usuarios")
+	resultados, err := db.Query("SELECT * FROM contatos")
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (Contato) EditarContato(contato *Contato) error { // Edita um contato espec
 
 	defer db.Close()
 
-	statement, err := db.Prepare("UPDATE usuarios SET nome=$1, email=$2, telefone=$3 WHERE id=$4")
+	statement, err := db.Prepare("UPDATE contatos SET nome=$1, email=$2, telefone=$3 WHERE id=$4")
 	if err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func ExcluirContato(ID_contato int) error { // Exclui um contato específico no 
 
 	defer db.Close()
 
-	statement, err := db.Prepare("DELETE FROM usuarios WHERE id=$1")
+	statement, err := db.Prepare("DELETE FROM contatos WHERE id=$1")
 	if err != nil {
 		return err
 	}
