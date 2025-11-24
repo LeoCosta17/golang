@@ -1,7 +1,8 @@
 package repos
 
-import ("database/sql"
+import (
 	"api/src/models"
+	"database/sql"
 )
 
 type Users struct{
@@ -38,12 +39,27 @@ func (repo Users) Create(user models.User)(uint64, error){
 	return uint64(lastInsertID), nil
 }
 
-func(repo Users) Search()([]Users, error){
-	result, err := repo.db.Query("SELECT * FROM usuarios")
+func(repo Users) Search()([]models.User, error){
+	results, err := repo.db.Query("SELECT * FROM usuarios")
 
 	if err != nil{
-		return []Users{} ,err
+		return []models.User{} ,err
 	}
 
+	defer results.Close()
 
+	var users []models.User
+
+	for results.Next(){
+		var user models.User
+
+		if err := results.Scan() ;err != nil{
+			return []models.User{}, err
+		}
+
+		users = append(users, user)
+
+	}
+
+	return users, nil
 }
