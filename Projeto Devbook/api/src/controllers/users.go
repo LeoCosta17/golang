@@ -42,8 +42,27 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, user)
 }
 
-func SearchUsers(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Buscando usuários..."))
+func SearchUsersByIdentifier(w http.ResponseWriter, r *http.Request) {
+
+	identificador := r.PathValue("user")
+
+	db, err := database.DBConn()
+	if err != nil{
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	defer db.Close()
+
+	repo := repos.NewUsersRepos(db)
+
+	users, err := repo.Search(identificador)
+	if err != nil{
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, users)	
 }
 
 func SearchUser(w http.ResponseWriter, r *http.Request) {

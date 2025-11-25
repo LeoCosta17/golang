@@ -3,6 +3,7 @@ package repos
 import (
 	"api/src/models"
 	"database/sql"
+	"fmt"
 )
 
 type Users struct{
@@ -39,11 +40,17 @@ func (repo Users) Create(user models.User)(uint64, error){
 	return uint64(lastInsertID), nil
 }
 
-func(repo Users) Search()([]models.User, error){
-	results, err := repo.db.Query("SELECT * FROM usuarios")
+func(repo Users) Search(identificador string)([]models.User, error){
+	
+	identificador = fmt.Sprintf("%%%s%%", identificador)
+
+	results, err := repo.db.Query("SELECT id, nome, nick, email, dt_criado FROM usuarios WHERE nome LIKE ? OR nick LIKE ?", 
+		identificador, 
+		identificador,
+	)
 
 	if err != nil{
-		return []models.User{} ,err
+		return nil, err
 	}
 
 	defer results.Close()
@@ -53,12 +60,11 @@ func(repo Users) Search()([]models.User, error){
 	for results.Next(){
 		var user models.User
 
-		if err := results.Scan() ;err != nil{
-			return []models.User{}, err
+		if err = results.Scan(&user.ID, &user.Name, &user.Nick, &user.Email, &user.CreateDate); err != nil{
+			return  nil, err
 		}
 
 		users = append(users, user)
-
 	}
 
 	return users, nil
