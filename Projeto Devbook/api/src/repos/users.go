@@ -69,3 +69,33 @@ func(repo Users) Search(identificador string)([]models.User, error){
 
 	return users, nil
 }
+
+func(repo Users) SearchByID(ID uint64)(models.User, error){
+
+	result, err := repo.db.Query(
+		"SELECT id, nome, nick, email, dt_criado FROM usuarios WHERE id = ?", 
+		ID,
+	)
+
+	if err != nil{
+		return models.User{}, err
+	}	
+
+	defer result.Close()
+
+	var user models.User
+
+	if result.Next(){
+		if err = result.Scan(
+			&user.ID, 
+			&user.Name, 
+			&user.Nick, 
+			&user.Email, 
+			&user.CreateDate,
+		); err != nil{
+			return models.User{}, err
+		}
+	}
+
+	return user, nil
+}

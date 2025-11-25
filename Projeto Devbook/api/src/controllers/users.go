@@ -7,6 +7,7 @@ import (
 	"api/src/responses"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -65,8 +66,27 @@ func SearchUsersByIdentifier(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, users)	
 }
 
-func SearchUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Buscando usuário..."))
+func SearchUserByID(w http.ResponseWriter, r *http.Request) {
+	
+	ID, err := strconv.ParseUint(r.PathValue("user_id"), 10, 64)
+
+	if err != nil{
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.DBConn()
+
+	repo := repos.NewUsersRepos(db)
+
+	user, err := repo.SearchByID(ID)
+
+	if err != nil{
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, user)
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
