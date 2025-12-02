@@ -14,6 +14,6 @@ func CreateRouter() *http.ServeMux {
 	router.HandleFunc("GET /users/search-id/{user_id}", controllers.BuscarUsuarioPorID)
 	router.HandleFunc("PUT /users/update/{user_id}", controllers.AtualizarUsuario)
 	router.HandleFunc("DELETE /users/delete/{user_id}", controllers.DeleteUsuario)
-
+	router.HandleFunc("POST /login", controllers.Login)
 	return router
 }
