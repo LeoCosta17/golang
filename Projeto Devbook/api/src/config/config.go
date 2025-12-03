@@ -9,30 +9,34 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var(
+var (
 	// String para conexão com o banco
 	ConnString = ""
 
 	// Porta onde a API irá rodar
 	Port = 0
+	//Chave para ssinar token
+	SecretKey []byte
 )
 
 // Carrega variáveis de ambiente
-func Load(){
+func Load() {
 	var err error
 
-	if err = godotenv.Load(); err != nil{
+	if err = godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
 
 	Port, err = strconv.Atoi(os.Getenv("API_PORT"))
-	if err != nil{
+	if err != nil {
 		Port = 9000
 	}
 
-	ConnString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local", 
+	ConnString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True&loc=Local",
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_SENHA"),
 		os.Getenv("DB_NOME"),
 	)
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
