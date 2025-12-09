@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"api/src/autenticacao"
 	"api/src/database"
 	"api/src/models"
 	"api/src/repositorios"
 	"api/src/respostas"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"net/http"
 	"strconv"
 )
@@ -79,6 +80,11 @@ func BuscarUsuarioPorID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db, err := database.DBConn()
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
 
 	repositorio := repositorios.NovoRepositorioUsuarios(db)
 
@@ -101,11 +107,20 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Dados recebidos por controller AtualizarUsuario: ", usuario)
-
 	ID, err := strconv.ParseUint(r.PathValue("user_id"), 10, 64)
 	if err != nil {
 		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	usuarioIDToken, err := autenticacao.ExtrairUsuarioID(r)
+	if err != nil {
+		respostas.Erro(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if ID != usuarioIDToken {
+		respostas.Erro(w, http.StatusForbidden, errors.New("Não é possível atualizar um usuário que não seja o seu"))
 		return
 	}
 
@@ -124,11 +139,11 @@ func AtualizarUsuario(w http.ResponseWriter, r *http.Request) {
 	repositorio := repositorios.NovoRepositorioUsuarios(db)
 
 	if err = repositorio.Atualizar(ID, usuario); err != nil {
-		respostas.Erro(w, http.StatusNoContent, err)
+		respostas.Erro(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	respostas.JSON(w, http.StatusNoContent, nil)
+	respostas.JSON(w, http.StatusCreated, nil)
 }
 
 // Deleta um usuário do banco de dados
