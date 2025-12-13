@@ -150,3 +150,127 @@ func (repositorio Usuarios) Deletar(ID uint64) error {
 	return nil
 
 }
+
+func (repositorio Usuarios) SeguirUsuario(usuarioID, seguidorID uint64) error {
+	statement, err := repositorio.db.Prepare("INSERT IGNORE INTO seguidores (usuario_id, seguidor_id) VALUES (?, ?)")
+	if err != nil {
+		return err
+	}
+
+	defer statement.Close()
+
+	if _, err = statement.Exec(usuarioID, seguidorID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repositorio Usuarios) PararSeguirUsuario(usuarioID, seguidorID uint64) error {
+	statement, err := repositorio.db.Prepare("DELETE FROM seguidores WHERE usuario_id = ? AND seguidor_id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(usuarioID, seguidorID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repositorio Usuarios) BuscarSeguidores(usuarioID uint64) ([]models.Usuario, error) {
+	resultados, err := repositorio.db.Query(`
+		SELECT u.id, u.nome, u.nick, u.email, u.dt_criado
+		FROM usuarios u INNER JOIN seguidores s on u.id = s.seguidor_id WHERE s.usuario_id = ?
+	`, usuarioID)
+
+	if err != nil {
+		return nil, err
+	}
+	defer resultados.Close()
+
+	var usuarios []models.Usuario
+	for resultados.Next() {
+		var usuario models.Usuario
+
+		if err = resultados.Scan(
+			&usuario.ID,
+			&usuario.Nome,
+			&usuario.Nick,
+			&usuario.Email,
+			&usuario.DataCriado,
+		); err != nil {
+			return nil, err
+		}
+
+		usuarios = append(usuarios, usuario)
+
+	}
+
+	return usuarios, nil
+}
+
+func (respositorio Usuarios) Seguindo(usuarioID uint64) ([]models.Usuario, error) {
+	resultados, err := respositorio.db.Query(`
+		SELECT u.id, u.nome, u.nick, u.email, u.dt_criado
+		FROM usuarios u INNER JOIN seguidores s on u.id = s.usuario_id WHERE s.seguidor_id = ?
+	`, usuarioID)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resultados.Close()
+
+	var usuarios []models.Usuario
+
+	for resultados.Next() {
+		var usuario models.Usuario
+		if err = resultados.Scan(
+			&usuario.ID,
+			&usuario.Nome,
+			&usuario.Nick,
+			&usuario.Email,
+			&usuario.DataCriado,
+		); err != nil {
+			return nil, err
+		}
+
+		usuarios = append(usuarios, usuario)
+	}
+
+	return usuarios, nil
+}
+
+func (repositorio Usuarios) BuscarSenha(usuarioID uint64) (string, error) {
+	resultado, err := repositorio.db.Query("SELECT senha FROM usuarios WHERE id = ?", usuarioID)
+	if err != nil {
+		return "", err
+	}
+	defer resultado.Close()
+
+	var usuario models.Usuario
+
+	if resultado.Next() {
+		if err = resultado.Scan(&usuario.Senha); err != nil {
+			return "", err
+		}
+	}
+
+	return usuario.Senha, nil
+}
+
+func (repositorio Usuarios) AtualizarSenha(usuarioID uint64, senha string) error {
+	statement, err := repositorio.db.Prepare("UPDATE usuarios SET senha = ? WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(senha, usuarioID); err != nil {
+		return err
+	}
+
+	return nil
+}
