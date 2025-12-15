@@ -26,6 +26,11 @@ func CriarPublicacao(w http.ResponseWriter, r *http.Request) {
 
 	publicacao.AutorID = usuarioID
 
+	if err = publicacao.ValidarPublicacao(); err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
 	db, err := database.DBConn()
 	if err != nil {
 		respostas.Erro(w, http.StatusInternalServerError, err)
