@@ -38,7 +38,9 @@ func (repositorio Publicacoes) Buscar(usuarioID uint64) ([]models.Publicacao, er
 	select distinct p.*, u.nick from publicacoes p 
 	inner join usuarios u on u.id = p.autor_id 
 	inner join seguidores s on p.autor_id = s.usuario_id 
-	where u.id = ? or s.seguidor_id = ?`,
+	where u.id = ? or s.seguidor_id = ?
+	order by 1 desc
+	`,
 		usuarioID, usuarioID,
 	)
 	if err != nil {
@@ -98,4 +100,18 @@ func (repositorio Publicacoes) BuscarPorID(publicacaoID uint64) (models.Publicac
 
 	return publicacao, nil
 
+}
+
+func (repositorio Publicacoes) Atualizar(publicacaoID uint64, publicacao models.Publicacao) error {
+	statement, err := repositorio.db.Prepare("UPDATE publicacoes SET titulo = ?, conteudo = ? WHERE id = ?")
+	if err != nil {
+		return nil
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(publicacao.Titulo, publicacao.Conteudo, publicacaoID); err != nil {
+		return err
+	}
+
+	return nil
 }
