@@ -7,3 +7,8 @@ INSERT INTO seguidores(usuario_id, seguidor_id) VALUES
     (1,2),
     (3,1),
     (1,3);
+
+INSERT INTO publicacoes(titulo, conteudo, autor_id) VALUES
+    ("Publicacao teste usuario 1", "Essa publicação é um teste para rota de busca por publicações!", 1),
+    ("Publicacao teste usuario 2", "Essa publicação é um teste para rota de busca por publicações!", 2),
+    ("Publicacao teste usuario 3", "Essa publicação é um teste para rota de busca por publicações!", 3);

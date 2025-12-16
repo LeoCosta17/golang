@@ -32,3 +32,70 @@ func (repositorio Publicacoes) Criar(publicacao models.Publicacao) (uint64, erro
 
 	return uint64(ultimoIDInserido), nil
 }
+
+func (repositorio Publicacoes) Buscar(usuarioID uint64) ([]models.Publicacao, error) {
+	resultados, err := repositorio.db.Query(`
+	select distinct p.*, u.nick from publicacoes p 
+	inner join usuarios u on u.id = p.autor_id 
+	inner join seguidores s on p.autor_id = s.usuario_id 
+	where u.id = ? or s.seguidor_id = ?`,
+		usuarioID, usuarioID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer resultados.Close()
+
+	var publicacoes []models.Publicacao
+
+	for resultados.Next() {
+		var publicacao models.Publicacao
+		if err = resultados.Scan(
+			&publicacao.ID,
+			&publicacao.Titulo,
+			&publicacao.Conteudo,
+			&publicacao.AutorID,
+			&publicacao.Curtidas,
+			&publicacao.CriadaEm,
+			&publicacao.AutorNick,
+		); err != nil {
+			return nil, err
+		}
+
+		publicacoes = append(publicacoes, publicacao)
+	}
+
+	return publicacoes, nil
+}
+
+func (repositorio Publicacoes) BuscarPorID(publicacaoID uint64) (models.Publicacao, error) {
+	resultado, err := repositorio.db.Query(
+		`SELECT p.*, u.nick FROM
+		publicacoes p INNER JOIN usuarios u
+		on u.id = p.autor_id where p.id = ?`,
+		publicacaoID,
+	)
+	if err != nil {
+		return models.Publicacao{}, err
+	}
+	defer resultado.Close()
+
+	var publicacao models.Publicacao
+
+	if resultado.Next() {
+		if err = resultado.Scan(
+			&publicacao.ID,
+			&publicacao.Titulo,
+			&publicacao.Conteudo,
+			&publicacao.AutorID,
+			&publicacao.Curtidas,
+			&publicacao.CriadaEm,
+			&publicacao.AutorNick,
+		); err != nil {
+			return models.Publicacao{}, nil
+		}
+	}
+
+	return publicacao, nil
+
+}
