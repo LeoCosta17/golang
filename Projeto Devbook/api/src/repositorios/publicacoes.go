@@ -129,3 +129,36 @@ func (repositorio Publicacoes) Deletar(publicacaoID uint64) error {
 
 	return nil
 }
+
+func (repositorio Publicacoes) BuscarPorUsuario(usuarioID uint64) ([]models.Publicacao, error) {
+	resultados, err := repositorio.db.Query(`
+		SELECT p.*, u.nick FROM publicacoes p JOIN usuarios u on u.id = p.autor_id WHERE autor_id = ?
+	`, usuarioID)
+	if err != nil {
+		return nil, err
+	}
+	defer resultados.Close()
+
+	var publicacoes []models.Publicacao
+
+	for resultados.Next() {
+
+		var publicacao models.Publicacao
+
+		if err = resultados.Scan(
+			&publicacao.ID,
+			&publicacao.Titulo,
+			&publicacao.Conteudo,
+			&publicacao.AutorID,
+			&publicacao.Curtidas,
+			&publicacao.CriadaEm,
+			&publicacao.AutorNick,
+		); err != nil {
+			return nil, err
+		}
+
+		publicacoes = append(publicacoes, publicacao)
+	}
+
+	return publicacoes, nil
+}
