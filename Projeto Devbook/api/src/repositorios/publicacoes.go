@@ -162,3 +162,31 @@ func (repositorio Publicacoes) BuscarPorUsuario(usuarioID uint64) ([]models.Publ
 
 	return publicacoes, nil
 }
+
+func (repositorio Publicacoes) Curtir(publicacaoID uint64) error {
+	statement, err := repositorio.db.Prepare("UPDATE publicacoes SET curtidas = curtidas + 1 WHERE id = ?")
+	if err != nil {
+		return nil
+	}
+	defer statement.Close()
+
+	if _, err := statement.Exec(publicacaoID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repositorio Publicacoes) Descurtir(publicacaoID uint64) error {
+	statement, err := repositorio.db.Prepare("UPDATE publicacoes SET curtidas = curtidas - 1 WHERE id = ?")
+	if err != nil {
+		return nil
+	}
+	defer statement.Close()
+
+	if _, err := statement.Exec(publicacaoID); err != nil {
+		return err
+	}
+
+	return nil
+}

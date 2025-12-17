@@ -219,3 +219,51 @@ func BuscarPublicacoesUsuario(w http.ResponseWriter, r *http.Request) {
 
 	respostas.JSON(w, http.StatusOK, publicacoes)
 }
+
+func CurtirPublicacao(w http.ResponseWriter, r *http.Request) {
+	publicacaoID, err := strconv.ParseUint(r.PathValue("publicacao_id"), 10, 64)
+	if err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.DBConn()
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositorios.NovoRepositorioPublicacoes(db)
+
+	if err = repositorio.Curtir(publicacaoID); err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, nil)
+}
+
+func DescurtirPublicacao(w http.ResponseWriter, r *http.Request) {
+	publicacaoID, err := strconv.ParseUint(r.PathValue("publicacao_id"), 10, 64)
+	if err != nil {
+		respostas.Erro(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.DBConn()
+	if err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repositorio := repositorios.NovoRepositorioPublicacoes(db)
+
+	if err = repositorio.Descurtir(publicacaoID); err != nil {
+		respostas.Erro(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	respostas.JSON(w, http.StatusOK, nil)
+}

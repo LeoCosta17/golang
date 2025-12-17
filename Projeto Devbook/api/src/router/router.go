@@ -33,6 +33,8 @@ func CreateRouter() *http.ServeMux {
 	router.HandleFunc("PUT /publicacoes/atualizar/{publicacao_id}", middlewares.Logger(middlewares.Autenticar(controllers.AtualizarPublicacao)))
 	router.HandleFunc("DELETE /publicacoes/deletar/{publicacao_id}", middlewares.Logger(middlewares.Autenticar(controllers.DeletarPublicacao)))
 	router.HandleFunc("GET /publicacoes/{usuario_id}", middlewares.Logger(middlewares.Autenticar(controllers.BuscarPublicacoesUsuario)))
+	router.HandleFunc("PUT /publicacoes/curtir/{publicacao_id}", middlewares.Logger(middlewares.Autenticar(controllers.CurtirPublicacao)))
+	router.HandleFunc("PUT /publicacoes/descurtir/{publicacao_id}", middlewares.Logger(middlewares.Autenticar(controllers.DescurtirPublicacao)))
 
 	return router
 }
