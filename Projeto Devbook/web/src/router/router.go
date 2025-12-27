@@ -12,5 +12,10 @@ func Gerar() *http.ServeMux {
 	router.HandleFunc("GET /", controllers.CarregarTelaLogin)
 	router.HandleFunc("GET /login", controllers.CarregarTelaLogin)
 
+	router.HandleFunc("GET /criar-usuario", controllers.CarregarPaginaCadastroUsuario)
+	router.HandleFunc("POST /usuarios", controllers.CriarUsuario)
+
+	fileServer := http.FileServer(http.Dir("./assets/"))
+	router.Handle("GET /assets/", http.StripPrefix("/assets/", fileServer))
 	return router
 }
