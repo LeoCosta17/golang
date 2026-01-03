@@ -11,6 +11,7 @@ func Gerar() *http.ServeMux {
 
 	router.HandleFunc("GET /", controllers.CarregarTelaLogin)
 	router.HandleFunc("GET /login", controllers.CarregarTelaLogin)
+	router.HandleFunc("POST /login", controllers.FazerLogin)
 
 	router.HandleFunc("GET /criar-usuario", controllers.CarregarPaginaCadastroUsuario)
 	router.HandleFunc("POST /usuarios", controllers.CriarUsuario)
